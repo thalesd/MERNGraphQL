@@ -1,0 +1,27 @@
+{
+    "name": "merngraphql",
+    "version": "1.0.0",
+    "description": "MERN Stack application with a GraphQL API",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/thalesd/MERNGraphQL.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/thalesd/MERNGraphQL/issues"
+    },
+    "homepage": "https://github.com/thalesd/MERNGraphQL#readme",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.2"
+    }
+}
