@@ -1,0 +1,7 @@
+{
+    "env": {
+        "MONGO_USER": "GraphQLMERNApp",
+        "MONGO_PASSWORD": "0p8atEoF5PtKCpMS",
+        "MONGO_DB": "GraphQLMERN-DB"
+    }
+}

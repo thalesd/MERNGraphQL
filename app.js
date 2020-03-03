@@ -2,10 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const { buildSchema } = require('graphql');
+const mongoose = require('mongoose');
+
+const Character = require('./models/character');
 
 const app = express();
-
-const characters = [];
 
 app.use(bodyParser.json());
 
@@ -14,7 +15,7 @@ app.use('/graphql', graphqlHttp({
         type Character {
             _id: ID!
             name: String!
-            isDemonFruitUser: Boolean!
+            isDevilFruitUser: Boolean!
             isHakiUser: Boolean!
             age: Int
             birthDate: String
@@ -26,7 +27,7 @@ app.use('/graphql', graphqlHttp({
 
         input characterInput {
             name: String!
-            isDemonFruitUser: Boolean!
+            isDevilFruitUser: Boolean!
             isHakiUser: Boolean!
             age: Int
             birthDate: String
@@ -43,20 +44,41 @@ app.use('/graphql', graphqlHttp({
     `),
     rootValue: {
         characters: () => {
-            return characters;
+            return Character.find().then(characters => {
+                return characters.map(char => {
+                    return {...char._doc };
+                })
+            }).catch(err => console.log('----- DATABASE FETCH ERROR ----- \n' + err));
         },
         createCharacter: ({ characterInput }) => {
-            const newCharacter = {
-                _id: Math.floor(1000 * Math.random()).toString(),
-                ...characterInput
-            }
+            const newCharacter = new Character({
+                name: characterInput.name,
+                isDevilFruitUser: characterInput.isDevilFruitUser,
+                isHakiUser: characterInput.isHakiUser,
+                age: characterInput.age,
+                birthDate: new Date(characterInput.birthDate),
+            });
 
-            characters.push(newCharacter);
-
-            return newCharacter;
+            return newCharacter.save().then(result => {
+                console.log('----- DATABASE SAVE SUCCESS -----' + result);
+                return {...result._doc }
+            }).catch(err => console.log('----- DATABASE SAVE ERROR -----\n' + err));
         }
     },
     graphiql: true
 }));
 
-app.listen(3000);
+const connectionString = `mongodb+srv://${
+    process.env.MONGO_USER
+    }:${
+    process.env.MONGO_PASSWORD
+    }@graphqlmern-app-dtfip.mongodb.net/${
+    process.env.MONGO_DB
+    }?retryWrites=true&w=majority`
+
+mongoose.connect(connectionString, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => { app.listen(3000) })
+    .catch(err => console.log('----- DATABASE CONNECTION ERROR ----- \n' + err))
