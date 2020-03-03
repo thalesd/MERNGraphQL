@@ -20,6 +20,10 @@ const characterSchema = new Schema({
     },
     birthDate: {
         type: Date
+    },
+    creator: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 
