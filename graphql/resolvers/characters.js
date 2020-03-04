@@ -33,7 +33,7 @@ module.exports = {
             isHakiUser: characterInput.isHakiUser,
             age: characterInput.age,
             birthDate: dateToString(characterInput.birthDate),
-            creator: '5e5db76913ee4a3f404a10a5'
+            creator: req.userId
         });
 
         let createdCharacter;
@@ -43,7 +43,7 @@ module.exports = {
             .then(result => {
                 console.log('----- DATABASE SAVE SUCCESS ----- \n' + result);
                 createdCharacter = remapCharacter(result);
-                return User.findById('5e5db76913ee4a3f404a10a5')
+                return User.findById(req.userId)
             })
             .then(user => {
                 if (!user) {

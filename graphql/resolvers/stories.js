@@ -29,7 +29,7 @@ module.exports = {
         const newStory = new Story({
             story: storyInput.story,
             characters: storyInput.characterIds,
-            user: storyInput.userId
+            user: req.userId
         })
 
         return newStory.save()
