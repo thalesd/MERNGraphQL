@@ -4,6 +4,7 @@ const { errorHandler } = require('../../helpers/error');
 const { user } = require('./mergers');
 
 const Character = require('../../models/character');
+const User = require('../../models/user');
 
 const remapCharacter = (char) => ({
     ...char._doc,
@@ -21,7 +22,11 @@ module.exports = {
             .catch(err => { console.log('----- DATABASE FETCH ERROR ----- \n' + err) })
             .catch(errorHandler);
     },
-    createCharacter: ({ characterInput }) => {
+    createCharacter: ({ characterInput }, req) => {
+        if (!req.isAuth) {
+            throw new Error("User not Authenticated!");
+        }
+
         const newCharacter = new Character({
             name: characterInput.name,
             isDevilFruitUser: characterInput.isDevilFruitUser,

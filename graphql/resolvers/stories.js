@@ -22,7 +22,10 @@ module.exports = {
             .catch(err => { console.log('----- DATABASE FETCH ERROR ----- \n' + err) })
             .catch(errorHandler)
     },
-    createStory: ({ storyInput }) => {
+    createStory: ({ storyInput }, req) => {
+        if (!req.isAuth) {
+            throw new Error("User not Authenticated!");
+        }
         const newStory = new Story({
             story: storyInput.story,
             characters: storyInput.characterIds,
@@ -37,7 +40,10 @@ module.exports = {
             .catch(err => { console.log('----- DATABASE SAVE ERROR -----\n' + err) })
             .catch(errorHandler);
     },
-    deleteStory: ({ storyId }) => {
+    deleteStory: ({ storyId }, req) => {
+        if (!req.isAuth) {
+            throw new Error("User not Authenticated!");
+        }
         return Story.findById(storyId)
             .then(result => {
                 return Story.deleteOne({ _id: result.id })

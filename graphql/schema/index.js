@@ -46,9 +46,16 @@ input storyInput {
     userId: ID!
 }
 
+type AuthData {
+    userId: ID!
+    token: String!
+    tokenExpiration: Int!
+}
+
 type RootQuery {
     characters: [Character!]
     stories: [Story!]
+    login(email: String!, password: String!): AuthData!
 }
 
 type RootMutation {
