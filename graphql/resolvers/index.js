@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 
+const { dateToString } = require('../../helpers/date');
+
 const Character = require('../../models/character');
 const User = require('../../models/user');
 const Story = require('../../models/story')
@@ -36,13 +38,13 @@ const remapStory = (st) => ({
     ...st._doc,
     user: user.bind(this, st.user),
     characters: characters.bind(this, st.characters),
-    createdAt: new Date(st._doc.createdAt).toISOString(),
-    updatedAt: new Date(st._doc.updatedAt).toISOString()
+    createdAt: dateToString(st._doc.createdAt),
+    updatedAt: dateToString(st._doc.updatedAt)
 });
 
 const remapCharacter = (char) => ({
     ...char._doc,
-    birthDate: new Date(char._doc.birthDate).toISOString(),
+    birthDate: dateToString(char._doc.birthDate),
     creator: user.bind(this, char._doc.creator)
 });
 
@@ -79,7 +81,7 @@ module.exports = {
             isDevilFruitUser: characterInput.isDevilFruitUser,
             isHakiUser: characterInput.isHakiUser,
             age: characterInput.age,
-            birthDate: new Date(characterInput.birthDate).toISOString(),
+            birthDate: dateToString(characterInput.birthDate),
             creator: '5e5db76913ee4a3f404a10a5'
         });
 
@@ -156,7 +158,7 @@ module.exports = {
             .then(result => {
                 return Story.deleteOne({ _id: result.id })
                     .then(deleteResult => {
-                        console.log('----- DATABASE DELETE SUCCESS -----' + deleteResult)
+                        console.log('----- DATABASE DELETE SUCCESS ----- \n' + deleteResult)
                         return remapStory(result);
                     })
             })
