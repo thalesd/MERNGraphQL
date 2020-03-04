@@ -31,13 +31,31 @@ input userInput {
     password: String!
 }
 
+type Story {
+    _id: ID!
+    story: String!
+    characters: [Character!]
+    user: User!
+    createdAt: String!
+    updatedAt: String! 
+}
+
+input storyInput {
+    story: String!
+    characterIds: [ID!]
+    userId: ID!
+}
+
 type RootQuery {
-    characters: [Character!]!
+    characters: [Character!]
+    stories: [Story!]
 }
 
 type RootMutation {
     createCharacter(characterInput: characterInput): Character
     createUser(userInput: userInput): User
+    createStory(storyInput: storyInput): Story!
+    deleteStory(storyId: ID!): Story!
 }
 
 schema {
