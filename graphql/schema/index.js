@@ -35,7 +35,6 @@ type Story {
     _id: ID!
     story: String!
     characters: [Character!]
-    user: User!
     createdAt: String!
     updatedAt: String! 
 }
