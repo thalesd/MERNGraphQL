@@ -10,7 +10,7 @@ const remapUser = (user) => ({
 });
 
 module.exports = {
-    createUser: ({ userInput }) => {
+    createUser: ({ userInput }, req, res, next) => {
         return User.findOne({ email: userInput.email })
             .then(user => {
                 if (user) {
@@ -34,8 +34,8 @@ module.exports = {
             })
             .catch(err => {
                 console.log('----- PASSWORD HASHING ERROR -----\n' + err);
+                errorHandler(err);
             })
-            .catch(errorHandler);
     },
     login: ({ email, password }) => {
         return User.findOne({ email: email })
@@ -63,6 +63,9 @@ module.exports = {
                         tokenExpiration: 1
                     }))
             })
-            .catch(errorHandler)
+            .catch(err => {
+                console.log('----- LOGIN ERROR -----\n' + err);
+                throw err;
+            })
     }
 }

@@ -8,7 +8,7 @@ const MainNavigation = props => (
         <div className="main-navigation__logo">
             <h1>Epic Stories</h1>
         </div>
-        <nav class="main-navigation__items">
+        <nav className="main-navigation__items">
             <ul>
                 <li><NavLink to="/auth">Authenticate</NavLink></li>
                 <li><NavLink to="/characters">My Characters</NavLink></li>
