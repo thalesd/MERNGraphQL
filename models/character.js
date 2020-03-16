@@ -7,13 +7,13 @@ const characterSchema = new Schema({
         type: String,
         required: true
     },
-    isDevilFruitUser: {
+    hasPowers: {
         type: Boolean,
         required: true
     },
-    isHakiUser: {
-        type: Boolean,
-        required: true
+    powerDescription: {
+        type: String,
+        required: false
     },
     age: {
         type: Number

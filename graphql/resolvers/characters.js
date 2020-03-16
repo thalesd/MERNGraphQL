@@ -1,16 +1,10 @@
 const { dateToString } = require('../../helpers/date');
 const { errorHandler } = require('../../helpers/error');
 
-const { user } = require('./mergers');
-
 const Character = require('../../models/character');
 const User = require('../../models/user');
 
-const remapCharacter = (char) => ({
-    ...char._doc,
-    birthDate: dateToString(char._doc.birthDate),
-    creator: user.bind(this, char._doc.creator)
-});
+const { remapCharacter } = require('./mergers');
 
 module.exports = {
     characters: () => {
@@ -27,12 +21,14 @@ module.exports = {
             throw new Error("User not Authenticated!");
         }
 
+        if (characterInput.birthDate.trim() > 0) characterInput.birthDate = dateToString(characterInput.birthDate);
+
         const newCharacter = new Character({
             name: characterInput.name,
-            isDevilFruitUser: characterInput.isDevilFruitUser,
-            isHakiUser: characterInput.isHakiUser,
+            hasPowers: characterInput.hasPowers,
+            powerDescription: characterInput.powerDescription,
             age: characterInput.age,
-            birthDate: dateToString(characterInput.birthDate),
+            birthDate: characterInput.birthDate,
             creator: req.userId
         });
 

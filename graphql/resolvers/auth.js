@@ -4,10 +4,7 @@ const { errorHandler } = require('../../helpers/error');
 
 const User = require('../../models/user');
 
-const remapUser = (user) => ({
-    ...user._doc,
-    password: null
-});
+const { remapUser } = require('./mergers');
 
 module.exports = {
     createUser: ({ userInput }, req, res, next) => {
@@ -69,3 +66,5 @@ module.exports = {
             })
     }
 }
+
+exports.remapUser = remapUser;

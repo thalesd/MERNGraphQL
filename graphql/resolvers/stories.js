@@ -5,13 +5,7 @@ const { user, characters } = require('./mergers');
 
 const Story = require('../../models/story');
 
-const remapStory = (st) => ({
-    ...st._doc,
-    user: user.bind(this, st.user),
-    characters: characters.bind(this, st.characters),
-    createdAt: dateToString(st._doc.createdAt),
-    updatedAt: dateToString(st._doc.updatedAt)
-});
+const { remapStory } = require('./mergers');
 
 module.exports = {
     stories: () => {

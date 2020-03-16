@@ -4,8 +4,8 @@ module.exports = buildSchema(`
 type Character {
     _id: ID!
     name: String!
-    isDevilFruitUser: Boolean!
-    isHakiUser: Boolean!
+    hasPowers: Boolean!
+    powerDescription: String
     age: Int
     birthDate: String
     creator: User!
@@ -13,8 +13,8 @@ type Character {
 
 input characterInput {
     name: String!
-    isDevilFruitUser: Boolean!
-    isHakiUser: Boolean!
+    hasPowers: Boolean!
+    powerDescription: String
     age: Int
     birthDate: String
 }

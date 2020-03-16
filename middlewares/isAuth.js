@@ -13,19 +13,14 @@ module.exports = (req, res, next) => {
         return next();
     }
 
-    jwt.verify(token, 'generatealongsecretlater')
-        .then(decodedToken => {
-            if (!decodedToken) {
-                req.isAuth = false;
-                return next();
-            }
+    const decodedToken = jwt.verify(token, 'generatealongsecretlater');
 
-            req.isAuth = true;
-            req.userId = decodedToken.userId;
-            return next();
-        })
-        .catch(err => {
-            req.isAuth = false;
-            return next();
-        })
+    if (decodedToken) {
+        req.isAuth = true;
+        req.userId = decodedToken.userId;
+        return next();
+    }
+
+    req.isAuth = false;
+    return next();
 }
