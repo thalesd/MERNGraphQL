@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Modal from '../Components/Modal/Modal';
 import Switch from '../Components/Switch/Switch';
+import CharacterList from '../Components/Characters/CharacterList/CharacterList';
+
 import AuthContext from '../context/auth-context';
 
 import './Characters.css';
@@ -10,7 +12,8 @@ class CharacterPage extends Component {
     state = {
         isModalOpen: false,
         creatingCharacter: true,
-        hasPowers: false
+        hasPowers: false,
+        createdCharacters: []
     }
 
     constructor(props) {
@@ -20,6 +23,10 @@ class CharacterPage extends Component {
         this.powerDescElRef = React.createRef();
         this.ageElRef = React.createRef();
         this.birthDateElRef = React.createRef();
+    }
+
+    componentDidMount() {
+        this.fetchCharacters();
     }
 
     static contextType = AuthContext;
@@ -43,7 +50,7 @@ class CharacterPage extends Component {
 
         if (name.trim().length == 0) return this.setState({ creatingCharacter: false });
 
-        if(birthDate.trim().length > 0) birthDate = new Date(birthDate).toISOString();
+        if (birthDate.trim().length > 0) birthDate = new Date(birthDate).toISOString();
 
         const character = { name, hasPowers, powerDescription, age, birthDate };
 
@@ -84,20 +91,66 @@ class CharacterPage extends Component {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => {
-            this.setState({ creatingCharacter: false });
-            this.setState({ isModalOpen: false });
-            console.log(res.json());
-        })
-        .catch(res => {
-            this.setState({ creatingCharacter: false });
-            console.log(res.json());
-        })
+            .then(res => {
+                this.setState({ creatingCharacter: false });
+                this.setState({ isModalOpen: false });
+                this.fetchCharacters();
+            })
+            .catch(res => {
+                this.setState({ creatingCharacter: false });
+                console.log(res);
+            })
 
     }
 
     handleSwitchHasPowers = () => {
         this.setState({ hasPowers: !this.state.hasPowers });
+    }
+
+    fetchCharacters = () => {
+        const requestBody = {
+            query: `
+                query {
+                    characters{
+                        _id
+                        name
+                        hasPowers
+                        powerDescription
+                        age
+                        birthDate
+                        creator {
+                            _id
+                            email
+                        }
+                    }
+                }
+            `
+        };
+
+        const token = this.context.token;
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => {
+                this.setState({ creatingCharacter: false });
+                this.setState({ isModalOpen: false });
+
+                return res.json();
+            })
+            .then(({ data }) => {
+                console.log('then', data.characters);
+                this.setState({ createdCharacters: data.characters })
+            })
+            .catch(res => {
+                this.setState({ creatingCharacter: false });
+                console.log('catch', res);
+            })
     }
 
     render() {
@@ -134,12 +187,11 @@ class CharacterPage extends Component {
             </Modal>
             <div className="characters-control">
                 <h1>My Characters</h1>
-                <p>Create awesome characters to add in your stories!</p>
-                <div>
-                    CharactersList
-            </div>
+                <p>Create awesome characters to add to your stories!</p>
+                <CharacterList characters={this.state.createdCharacters} />
                 <button className="btn" onClick={this.openModalHandler}>Create Character</button>
             </div>
+            
         </React.Fragment>
         )
     }
